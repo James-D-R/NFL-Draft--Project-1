@@ -50,8 +50,8 @@ namespace Project_1
             for (var y = 0; y < 5; ++y)
             {
                 int position = selectPosition();
-                int choice = selectName(players, salary, position);
-                money = money - salary[position, choice - 1];
+                int choiceColumn = selectName(players, salary, position);
+                money = money - salary[position, choiceColumn - 1];
                 Console.WriteLine("\nYou have ${0} left to spend.", money);
                 Console.WriteLine("Press enter to continue...");
                 Console.ReadLine();
@@ -70,30 +70,31 @@ namespace Project_1
             Console.WriteLine("6 for Tight End");
             Console.WriteLine("7 for Line-Backer");
             Console.WriteLine("8 for Offensive Tackle");
-            int position = Console.Read();
-            position = position - 1;
+            string position = Console.ReadLine();
+            int row = Int32.Parse(position);
+            row = row - 1;
             Console.WriteLine("\nEnter the number for the player you would like to draft.\n");
 
-            return position;
+            return row;
         }
 
-        public static int selectName(string[,] players, int[,] salary, int position)
+        public static int selectName(string[,] players, int[,] salary, int row)
         {
-            for (int x = 0; x < 5; ++x)
+            for (int x = 0; x < 5; x++)
             {
-                int row = position;
+                
                 int column = x;
-                Console.WriteLine(players[row, column]);
-                //string name = players[position, row];
-                //Console.WriteLine("{0}. {1}",x+1,name);
+                string name = players[row, column];
+                Console.WriteLine("{0}. {1}",x+1,name);
             }
-            int choice = Console.Read();
-            Console.WriteLine("\nYou drafted {0}.", players[position, choice-1]);
-            Console.WriteLine("Their salary initial is ${0}.", salary[position, choice - 1]);
+            string choice = Console.ReadLine();
+            int choiceColumn = Int32.Parse(choice);
+            Console.WriteLine("\nYou drafted {0}.", players[row, choiceColumn - 1]);
+            Console.WriteLine("Their salary initial is ${0}.", salary[row, choiceColumn - 1]);
 
 
 
-            return choice;
+            return choiceColumn;
         }
     }
 }
