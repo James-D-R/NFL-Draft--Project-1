@@ -37,10 +37,63 @@ namespace Project_1
                               {22900300,19000590,18000222,12999999,10000100 },
                               {23000000,20000000,19400000,16200700,15900000 } };
 
+            int money = 95000000;
+
+            draftPlayer(players, salary, money);
 
 
 
         }
-        
+
+        public static void draftPlayer(string[,] players, int[,] salary, int money)
+        {
+            for (var y = 0; y < 5; ++y)
+            {
+                int position = selectPosition();
+                int choice = selectName(players, salary, position);
+                money = money - salary[position, choice - 1];
+                Console.WriteLine("\nYou have ${0} left to spend.", money);
+                Console.WriteLine("Press enter to continue...");
+                Console.ReadLine();
+
+            }
+        }
+
+        public static int selectPosition()
+        {
+            Console.WriteLine("Enter the number for the position you would like to choose.\n");
+            Console.WriteLine("1 for Quarterback.");
+            Console.WriteLine("2 for Running Back");
+            Console.WriteLine("3 for Wide-Receiver");
+            Console.WriteLine("4 for Defensive Lineman");
+            Console.WriteLine("5 for Defensive-Back");
+            Console.WriteLine("6 for Tight End");
+            Console.WriteLine("7 for Line-Backer");
+            Console.WriteLine("8 for Offensive Tackle");
+            int position = Console.Read();
+            position = position - 1;
+            Console.WriteLine("\nEnter the number for the player you would like to draft.\n");
+
+            return position;
+        }
+
+        public static int selectName(string[,] players, int[,] salary, int position)
+        {
+            for (int x = 0; x < 5; ++x)
+            {
+                int row = position;
+                int column = x;
+                Console.WriteLine(players[row, column]);
+                //string name = players[position, row];
+                //Console.WriteLine("{0}. {1}",x+1,name);
+            }
+            int choice = Console.Read();
+            Console.WriteLine("\nYou drafted {0}.", players[position, choice-1]);
+            Console.WriteLine("Their salary initial is ${0}.", salary[position, choice - 1]);
+
+
+
+            return choice;
+        }
     }
 }
