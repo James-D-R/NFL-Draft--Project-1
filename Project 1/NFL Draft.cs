@@ -37,29 +37,65 @@ namespace Project_1
                               {22900300,19000590,18000222,12999999,10000100 },
                               {23000000,20000000,19400000,16200700,15900000 } };
 
-            int money = 95000000;
+            string[] positions = {"Quaterback","Running Back","Wide-Receiver","Defensive Lineman",
+                                    "Defensive-Back","Tight End","Line-Backer","Offensive Tackle"};
 
-            draftPlayer(players, salary, money);
+            int money = 95000000;
+            string[] chosenPlayers = { };
+
+            draftPlayer(players, college, salary, positions, money);
 
 
 
         }
 
-        public static void draftPlayer(string[,] players, int[,] salary, int money)
+        public static void draftPlayer(string[,] players, string[,] college, int[,] salary, string[] positions, int money)
         {
-            for (var y = 0; y < 5; ++y)
+            string[] chosenPlayers = { };
+            string[] playerPos = { };
+            bool sentinel = true;
+            while(sentinel == true) //sentinel value
             {
-                int position = selectPosition();
-                int choiceColumn = selectName(players, salary, position);
-                money = money - salary[position, choiceColumn - 1];
-                Console.WriteLine("\nYou have ${0} left to spend.", money);
-                Console.WriteLine("Press enter to continue...");
-                Console.ReadLine();
+                int row = choosePosition(); //Select the player position
+                int choiceColumn = selectName(players, college, salary, positions, row, money); // Select the player
+
+                if (money < salary[row, choiceColumn])
+                { }
+                else //if enough salary is left, add player name to list
+                {
+                    chosenPlayers = manageSelection(chosenPlayers, players, row, choiceColumn);
+                    playerPos = managePosition(row, positions, playerPos);
+                    money = money - salary[row, choiceColumn];
+                }
+                
+                Console.WriteLine("Number of players drafted:{0}\n",chosenPlayers.Length);
+                for (int x = 0; x < chosenPlayers.Length; x++)
+                {
+                    Console.WriteLine("{0}. {1} ({2})",x+1,chosenPlayers[x],playerPos[x]);
+                }
+                
+                Console.WriteLine("\nYou have ${0} remaining.", money);
+                if (chosenPlayers.Length == 5) //ends loop if user has selected 5 players
+                {
+                    sentinel = false;
+                    Console.WriteLine("You have drafted five players.");
+                }
+                else
+                {
+                    Console.WriteLine("Press enter to draft another player or enter any other key to quit.");
+                    string cont = Console.ReadLine();
+                    if (cont != "")
+                    {
+                        sentinel = false;
+                    }
+                }
+                
+                Console.Clear();
 
             }
         }
 
-        public static int selectPosition()
+        public static int choosePosition()
         {
             Console.WriteLine("Enter the number for the position you would like to choose.\n");
             Console.WriteLine("1 for Quarterback.");
@@ -70,31 +106,67 @@ namespace Project_1
             Console.WriteLine("6 for Tight End");
             Console.WriteLine("7 for Line-Backer");
             Console.WriteLine("8 for Offensive Tackle");
-            string position = Console.ReadLine();
-            int row = Int32.Parse(position);
+            string a;
+            a = Console.ReadLine();
+            while(a != "1" && a != "2" && a != "3" && a != "4" && a != "5" && a != "6" && a != "7" && a != "8")
+            {
+                Console.WriteLine("Invalid option. Please enter a number 1-8");
+                a = Console.ReadLine();
+            }
+            int row = Int32.Parse(a);
             row = row - 1;
             Console.WriteLine("\nEnter the number for the player you would like to draft.\n");
 
             return row;
         }
 
-        public static int selectName(string[,] players, int[,] salary, int row)
+        public static int selectName(string[,] players, string[,] college, int[,] salary, string[] positions, int row, int money)
         {
             for (int x = 0; x < 5; x++)
             {
-                
+
                 int column = x;
                 string name = players[row, column];
-                Console.WriteLine("{0}. {1}",x+1,name);
+                Console.WriteLine("{0}. {1}", x + 1, name);
             }
             string choice = Console.ReadLine();
+            while (choice != "1" && choice != "2" && choice != "3" && choice != "4" && choice != "5")
+            {
+                Console.WriteLine("Invalid option. Please enter a number 1-5.");
+                choice = Console.ReadLine();
+            }
             int choiceColumn = Int32.Parse(choice);
-            Console.WriteLine("\nYou drafted {0}.", players[row, choiceColumn - 1]);
-            Console.WriteLine("Their salary initial is ${0}.", salary[row, choiceColumn - 1]);
-
-
+            choiceColumn = choiceColumn - 1;
+            if (money < salary[row, choiceColumn])
+            {
+                Console.WriteLine("You don't have enough balance to draft this player.");
+            }
+            else
+            {
+                Console.WriteLine("\nYou drafted {2}, {0} {1}.", players[row, choiceColumn], college[row,choiceColumn],positions[row]);
+                Console.WriteLine("Their initial salary is ${0}.", salary[row, choiceColumn]);
+            }
 
             return choiceColumn;
         }
+
+        public static string[] manageSelection(string[] chosenPlayers,string[,] players, int row, int choiceColumn)
+        {
+            
+            string[] z = { players[row, choiceColumn] };
+            chosenPlayers = chosenPlayers.Concat(z).ToArray();
+            return chosenPlayers;
+        }
+
+        public static string[] managePosition(int row, string[] positions, string[] playerPos)
+        {
+            string[] b = { positions[row] };
+            playerPos = playerPos.Concat(b).ToArray();
+            return playerPos;
+        }
+
+
+
+
     }
 }
