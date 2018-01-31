@@ -53,11 +53,17 @@ namespace Project_1
         {
             string[] chosenPlayers = { };
             string[] playerPos = { };
+            int[] playerSalary = { };
+            string[] playerCollege = { };
+            int columnTop = 0;
+
             bool sentinel = true;
-            while(sentinel == true) //sentinel value
+            while (sentinel == true) //sentinel value
             {
                 int row = choosePosition(); //Select the player position
                 int choiceColumn = selectName(players, college, salary, positions, row, money); // Select the player
+                columnTop = StoreChoiceColumn(choiceColumn, columnTop); //Stores and returns corresponding column from players array
+
 
                 if (money < salary[row, choiceColumn])
                 { }
@@ -65,20 +71,25 @@ namespace Project_1
                 {
                     chosenPlayers = manageSelection(chosenPlayers, players, row, choiceColumn);
                     playerPos = managePosition(row, positions, playerPos);
+                    playerCollege = ManageCollege(row, choiceColumn, college, playerCollege);
+                    playerSalary = manageSalary(row, choiceColumn, salary, playerSalary);
                     money = money - salary[row, choiceColumn];
                 }
-                
-                Console.WriteLine("Number of players drafted:{0}\n",chosenPlayers.Length);
+             
+
+                Console.WriteLine("Number of players drafted:{0}\n", chosenPlayers.Length);
                 for (int x = 0; x < chosenPlayers.Length; x++)
                 {
-                    Console.WriteLine("{0}. {1} ({2})",x+1,chosenPlayers[x],playerPos[x]);
+                    Console.WriteLine("{0}. {1}, ({2}), {3}, ${4}", x + 1, chosenPlayers[x], playerPos[x], playerCollege[x], playerSalary[x]);
                 }
-                
+
                 Console.WriteLine("\nYou have ${0} remaining.", money);
                 if (chosenPlayers.Length == 5) //ends loop if user has selected 5 players
                 {
                     sentinel = false;
                     Console.WriteLine("You have drafted five players.");
+                    Console.Clear();
+                    ClosingMessage(chosenPlayers, playerPos, playerSalary, playerCollege, money);
                 }
                 else
                 {
@@ -87,11 +98,14 @@ namespace Project_1
                     if (cont != "")
                     {
                         sentinel = false;
+                        Console.Clear();
+                        CostEffectiveMessage(chosenPlayers, money, columnTop);
+                        ClosingMessage(chosenPlayers, playerPos, playerSalary, playerCollege, money);
                     }
                 }
-                
-                Console.Clear();
 
+                Console.Clear();
+                
             }
         }
 
@@ -108,7 +122,7 @@ namespace Project_1
             Console.WriteLine("8 for Offensive Tackle");
             string a;
             a = Console.ReadLine();
-            while(a != "1" && a != "2" && a != "3" && a != "4" && a != "5" && a != "6" && a != "7" && a != "8")
+            while (a != "1" && a != "2" && a != "3" && a != "4" && a != "5" && a != "6" && a != "7" && a != "8")
             {
                 Console.WriteLine("Invalid option. Please enter a number 1-8");
                 a = Console.ReadLine();
@@ -127,7 +141,7 @@ namespace Project_1
 
                 int column = x;
                 string name = players[row, column];
-                Console.WriteLine("{0}. {1}", x + 1, name);
+                Console.WriteLine("{0}. {1}, {2}", x + 1, name, college[row, column]);
             }
             string choice = Console.ReadLine();
             while (choice != "1" && choice != "2" && choice != "3" && choice != "4" && choice != "5")
@@ -139,20 +153,20 @@ namespace Project_1
             choiceColumn = choiceColumn - 1;
             if (money < salary[row, choiceColumn])
             {
-                Console.WriteLine("You don't have enough balance to draft this player.");
+                Console.WriteLine("You don't have enough balance to draft this player.\n");
             }
             else
             {
-                Console.WriteLine("\nYou drafted {2}, {0} {1}.", players[row, choiceColumn], college[row,choiceColumn],positions[row]);
-                Console.WriteLine("Their initial salary is ${0}.", salary[row, choiceColumn]);
+                Console.WriteLine("\nYou drafted {2}, {0} {1}.", players[row, choiceColumn], college[row, choiceColumn], positions[row]);
+                Console.WriteLine("Their initial salary is ${0}.\n", salary[row, choiceColumn]);
             }
 
             return choiceColumn;
         }
 
-        public static string[] manageSelection(string[] chosenPlayers,string[,] players, int row, int choiceColumn)
+        public static string[] manageSelection(string[] chosenPlayers, string[,] players, int row, int choiceColumn)
         {
-            
+
             string[] z = { players[row, choiceColumn] };
             chosenPlayers = chosenPlayers.Concat(z).ToArray();
             return chosenPlayers;
@@ -165,7 +179,55 @@ namespace Project_1
             return playerPos;
         }
 
+        public static int[] manageSalary(int row, int choiceColumn, int[,] salary, int[] playerSalary)
+        {
+            int[] c = { salary[row, choiceColumn] };
+            playerSalary = playerSalary.Concat(c).ToArray();
+            return playerSalary;
+        }
 
+        public static string[] ManageCollege(int row, int choiceColumn, string[,] college, string[] playerCollege)
+        {
+            string[] d = { college[row, choiceColumn] };
+            playerCollege = playerCollege.Concat(d).ToArray();
+            return playerCollege;
+        }
+
+        static void ClosingMessage(string[] chosenPlayers, string[] playerPos, int[] playerSalary, string[] playerCollege, int money)
+        {
+            Console.WriteLine("Thank you for using this program.\n Listed below are your final draft picks.\n");
+            for(int x = 0; x < chosenPlayers.Length; x++)
+            {
+                Console.WriteLine("{0}. {1}, ({2}), {3}, ${4}", x + 1, chosenPlayers[x], playerPos[x], playerCollege[x], playerSalary[x]);
+            }
+            int totalSalaries = 95000000 - money;
+            Console.WriteLine("\nYou have spent a total of ${0} on player salaries.\n${1} remains for signing bonuses.\n",totalSalaries, money);
+            Console.WriteLine("Press any key to exit.");
+            Console.ReadKey();
+        }
+        
+        static void CostEffectiveMessage(string[] chosenPlayers, int money, int columnTop)
+        {
+            if (columnTop >= 3)
+            {
+                if (money >= 30000000)
+                {
+                    Console.ForegroundColor = ConsoleColor.Green;
+                    Console.WriteLine("Cost effective pick!\nYou picked up to " +
+                        "three top 3 players for under $65000000!\n");
+                    Console.ResetColor();
+                }
+            }
+        }
+
+        static int StoreChoiceColumn(int choiceColumn, int columnTop)
+        {
+            if (choiceColumn <= 2)
+            {
+                columnTop = columnTop + 1;
+            }
+            return columnTop;
+        }
 
 
     }
