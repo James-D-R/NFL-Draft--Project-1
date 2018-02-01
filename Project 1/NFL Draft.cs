@@ -43,6 +43,7 @@ namespace Project_1
             int money = 95000000;
             string[] chosenPlayers = { };
 
+            WelcomeMessage();
             draftPlayer(players, college, salary, positions, money);
 
 
@@ -60,6 +61,8 @@ namespace Project_1
             bool sentinel = true;
             while (sentinel == true) //sentinel value
             {
+                PlayerTable(players, college, salary, positions);
+
                 int row = choosePosition(); //Select the player position
                 int choiceColumn = selectName(players, college, salary, positions, row, money); // Select the player
                 columnTop = StoreChoiceColumn(choiceColumn, columnTop); //Stores and returns corresponding column from players array
@@ -111,7 +114,7 @@ namespace Project_1
 
         public static int choosePosition()
         {
-            Console.WriteLine("Enter the number for the position you would like to choose.\n");
+            Console.WriteLine("\nEnter the number for the position you would like to choose.\n");
             Console.WriteLine("1 for Quarterback.");
             Console.WriteLine("2 for Running Back");
             Console.WriteLine("3 for Wide-Receiver");
@@ -229,6 +232,62 @@ namespace Project_1
             return columnTop;
         }
 
+        static void WelcomeMessage()
+        {
+            Console.WriteLine("Welcome to the NFL draft pick planner.\nThis program will allow you to pick up to 5 players." +
+                                "\nYou will have a starting budget of $95000000 to pay for initial salaries." +
+                                "\nPlayers are listed in best to least best order." +
+                                "\nPress enter to start...");
+            Console.ReadLine();
+            Console.Clear();
+        }
 
-    }
+        static void PlayerTable(string[,] players, string[,] college, int[,] salary, string[] positions)
+        {
+            string[] rank= {"Position", "The Best", "2nd Best","3rd Best","4th Best","5th Best" };
+            for (var x = 0; x < rank.Length; x++)
+            {
+                Console.Write("{0,-25}", rank[x]);
+            }
+    
+            Console.WriteLine("\n-----------------------------------------------------------------------------------------------------------------------------------------------\n");
+            for (var y = 0; y < 8; y++)
+            {
+                string space = "";
+                Console.Write("{0,-25}",positions[y]);
+                for (var x = 0; x < rank.Length - 1; x++)
+                {
+                    Console.ForegroundColor = ConsoleColor.Magenta;
+                    Console.Write("{0,-25}", players[y, x]);
+                    Console.ResetColor();
+                }
+                Console.WriteLine();
+
+                Console.Write("{0,-25}", space);
+                for (var x = 0; x < rank.Length -1; x++)
+                {
+                    Console.ForegroundColor = ConsoleColor.DarkCyan;
+                    Console.Write("{0,-25}", college[y, x]);
+                    Console.ResetColor();
+                }
+                Console.WriteLine();
+
+                Console.Write("{0,-25}", space);
+                for (var x = 0; x < rank.Length -1; x++)
+                {
+                    Console.ForegroundColor = ConsoleColor.Green;
+                    Console.Write("${0,-24}", salary[y, x]);
+                    Console.ResetColor();
+                }
+                Console.WriteLine("\n");
+                
+                
+                
+            }
+        }
+
+    } 
+    
+
+   
 }
