@@ -44,7 +44,13 @@ namespace Project_1
             string[] chosenPlayers = { };
 
             WelcomeMessage();
-            draftPlayer(players, college, salary, positions, money);
+            bool sent = true;
+            while(sent == true)
+            {
+                draftPlayer(players, college, salary, positions, money);
+                sent = PickAgain(sent); // asks user to quit or draft again.
+            }
+            
 
 
 
@@ -56,6 +62,7 @@ namespace Project_1
             string[] playerPos = { };
             int[] playerSalary = { };
             string[] playerCollege = { };
+            money = 95000000;
             int columnTop = 0;
 
             bool sentinel = true;
@@ -63,7 +70,7 @@ namespace Project_1
             {
                 PlayerTable(players, college, salary, positions);
 
-                int row = choosePosition(); //Select the player position
+                int row = choosePosition(money); //Select the player position
                 int choiceColumn = selectName(players, college, salary, positions, row, money); // Select the player
                 columnTop = StoreChoiceColumn(choiceColumn, columnTop); //Stores and returns corresponding column from players array
 
@@ -71,6 +78,7 @@ namespace Project_1
                 if (money < salary[row, choiceColumn])
                 { }
                 else //if enough salary is left, add player name to list
+                    // methods to add player, college, salary, and position to arrays
                 {
                     chosenPlayers = manageSelection(chosenPlayers, players, row, choiceColumn);
                     playerPos = managePosition(row, positions, playerPos);
@@ -103,7 +111,7 @@ namespace Project_1
                         sentinel = false;
                         Console.Clear();
                         CostEffectiveMessage(chosenPlayers, money, columnTop);
-                        ClosingMessage(chosenPlayers, playerPos, playerSalary, playerCollege, money);
+                        ClosingMessage(chosenPlayers, playerPos, playerSalary, playerCollege, money); //Closing message
                     }
                 }
 
@@ -112,8 +120,9 @@ namespace Project_1
             }
         }
 
-        public static int choosePosition()
+        public static int choosePosition(int money)
         {
+            Console.WriteLine("You have ${0} remaining.",money);
             Console.WriteLine("\nEnter the number for the position you would like to choose.\n");
             Console.WriteLine("1 for Quarterback.");
             Console.WriteLine("2 for Running Back");
@@ -125,7 +134,7 @@ namespace Project_1
             Console.WriteLine("8 for Offensive Tackle");
             string a;
             a = Console.ReadLine();
-            while (a != "1" && a != "2" && a != "3" && a != "4" && a != "5" && a != "6" && a != "7" && a != "8")
+            while (a != "1" && a != "2" && a != "3" && a != "4" && a != "5" && a != "6" && a != "7" && a != "8") //Defensive Programming
             {
                 Console.WriteLine("Invalid option. Please enter a number 1-8");
                 a = Console.ReadLine();
@@ -147,7 +156,7 @@ namespace Project_1
                 Console.WriteLine("{0}. {1}, {2}", x + 1, name, college[row, column]);
             }
             string choice = Console.ReadLine();
-            while (choice != "1" && choice != "2" && choice != "3" && choice != "4" && choice != "5")
+            while (choice != "1" && choice != "2" && choice != "3" && choice != "4" && choice != "5") //Defensive Programming
             {
                 Console.WriteLine("Invalid option. Please enter a number 1-5.");
                 choice = Console.ReadLine();
@@ -205,8 +214,8 @@ namespace Project_1
             }
             int totalSalaries = 95000000 - money;
             Console.WriteLine("\nYou have spent a total of ${0} on player salaries.\n${1} remains for signing bonuses.\n",totalSalaries, money);
-            Console.WriteLine("Press any key to exit.");
-            Console.ReadKey();
+            Console.WriteLine("Press enter to continue...");
+            Console.ReadLine();
         }
         
         static void CostEffectiveMessage(string[] chosenPlayers, int money, int columnTop)
@@ -236,13 +245,13 @@ namespace Project_1
         {
             Console.WriteLine("Welcome to the NFL draft pick planner.\nThis program will allow you to pick up to 5 players." +
                                 "\nYou will have a starting budget of $95000000 to pay for initial salaries." +
-                                "\nPlayers are listed in best to least best order." +
+                                "\nPlayers are ordered from best ranking to lowest ranking." +
                                 "\nPress enter to start...");
             Console.ReadLine();
             Console.Clear();
         }
 
-        static void PlayerTable(string[,] players, string[,] college, int[,] salary, string[] positions)
+        static void PlayerTable(string[,] players, string[,] college, int[,] salary, string[] positions) //method for displaying player data table
         {
             string[] rank= {"Position", "The Best", "2nd Best","3rd Best","4th Best","5th Best" };
             for (var x = 0; x < rank.Length; x++)
@@ -250,7 +259,7 @@ namespace Project_1
                 Console.Write("{0,-25}", rank[x]);
             }
     
-            Console.WriteLine("\n-----------------------------------------------------------------------------------------------------------------------------------------------\n");
+            Console.WriteLine("\n_______________________________________________________________________________________________________________________________________________");
             for (var y = 0; y < 8; y++)
             {
                 string space = "";
@@ -279,11 +288,29 @@ namespace Project_1
                     Console.Write("${0,-24}", salary[y, x]);
                     Console.ResetColor();
                 }
-                Console.WriteLine("\n");
+                Console.WriteLine("\n_______________________________________________________________________________________________________________________________________________");
                 
                 
                 
             }
+        }
+
+        static bool PickAgain(bool sent)
+        {
+            Console.WriteLine("Press enter to quit, or enter any key to draft again.");
+            string contin = Console.ReadLine();
+            if (contin == "")
+            {
+                sent = false;
+            }
+            else
+            {
+                sent = true;
+            }
+            Console.Clear();
+
+           
+            return sent;
         }
 
     } 
